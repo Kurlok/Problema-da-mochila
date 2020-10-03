@@ -1,2 +1,2 @@
-# Problema-da-mochila
- Algoritmo genético aplicado ao problema da mochila
+# Problema da Mochila
+ Algoritmo genético aplicado ao problema da mochila em python
