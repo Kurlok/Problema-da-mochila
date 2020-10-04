@@ -8,9 +8,7 @@ Original file is located at
 """
 
 import numpy as npy
-import pandas as pd
 import random as rd
-from random import randint
 import matplotlib.pyplot as plt
 
 #Definindo as variáveis
@@ -57,6 +55,7 @@ populacao_inicial = populacao_inicial.astype(int)
 #qtd_geracoes = int(input("Digite a quantidade de gerações:\n"))
 qtd_geracoes = 5
 qtd_geracoes = qtd_geracoes
+qtd_pais = 2
 
 #Imprimindo as variáveis
 print('PARAMÊTROS')
@@ -68,6 +67,7 @@ print('Valor mínimo que um item pode possuir: {}'.format(valor_item_min))
 print('Valor máximo que um item pode possuir: {}'.format(valor_item_max))
 print('Quantidade de soluções por geração: {}'.format(qtd_solucoes))
 print('Quantidade de gerações: {}'.format(qtd_geracoes))
+print('Quantidade de pais: {}'.format(qtd_pais))
 print('\nLISTA DE ITENS')
 print('Nº Item   Peso      Valor')
 for i in range(qtd_itens):
@@ -75,14 +75,13 @@ for i in range(qtd_itens):
 print('\nFUNÇÃO FITNESS\nSe o somatório de (peso do item * gene) para todos os genes da solução da geração for menor ou igual ao peso máximo que a mochila pode aguentar então o fitness é igual o somatório (valor do item * gene) (peso do item * gene) para todos os genes da solução. Caso contrário o fitness é igual a 0.')
 print('\nGERAÇÕES (0 ou 1 significa se o item está presente ou não na solução):')
 
-#A função fitness é: Se o somatório de (peso do item * gene) para cada indíviduo da solução <= peso_max_mochila então o fitness é igual o somatório (valor do item * gene) da solução. Caso contrário fitness = 0
-def calcula_fitness(peso, valor, populacao, peso_max, n_geracao):
-    fitness = npy.empty(populacao.shape[0])
+def calcula_fitness(peso, valor, geracao, peso_max, n_geracao):
+    fitness = npy.empty(geracao.shape[0])
     melhor_solucao = 0 
     melhor_fitness = 0
-    for i in range(populacao.shape[0]):
-        soma_valor = npy.sum(populacao[i] * valor)
-        soma_peso = npy.sum(populacao[i] * peso)
+    for i in range(geracao.shape[0]):
+        soma_valor = npy.sum(geracao[i] * valor)
+        soma_peso = npy.sum(geracao[i] * peso)
         if soma_peso <= peso_max:
             fitness[i] = soma_valor
         else:
@@ -91,33 +90,97 @@ def calcula_fitness(peso, valor, populacao, peso_max, n_geracao):
             melhor_fitness = fitness[i]
             melhor_solucao = i+1
         print('Geração {0}, Solução {1}, Fitness: {2}'.format(n_geracao+1, i+1, fitness[i]))
-    print('A melhor solução da geração {0} foi a solução nº {1}\n'.format(n_geracao+1, melhor_solucao))
+    print('---- A melhor solução da geração {0} foi a nº {1} ----'.format(n_geracao+1, melhor_solucao))
     return fitness.astype(int)
 
-def selecao(fitness, n_pais, populacao):
-    fitness = list(fitness)
-    pais = npy.empty((n_pais, populacao.shape[1]))
-    for i in range(n_pais):
-        fitness_max_idx = npy.where(fitness == npy.max(fitness))
-        pais[i,:] = populacao[fitness_max_idx[0][0], :]
-        fitness[fitness_max_idx[0][0]] = -999999
+# def selecao_ranking(fitness, qtd_pais, geracao):
+#     fitness = list(fitness)
+#     pais = npy.empty((qtd_pais, geracao.shape[1])) #geracao.shape[1] é equivalente a qtd_itens
+#     for i in range(qtd_pais):
+#         fitness_max_idx = npy.where(fitness == npy.max(fitness))
+#         pais[i,:] = geracao[fitness_max_idx[0][0], :] #recebe a linha i
+#     print('PAIS: {0}'.format(pais))
+#     return pais
+
+def selecao_roleta(fitness, qtd_pais, geracao):
+    # fitness = list(fitness)
+    fitness_total = npy.sum(fitness)
+    print ('SELEÇÃO ROLETA')
+    print ('Fitness Total da Geração: {}'.format(fitness_total))
+    print ('Fitness das soluções da geração: {}'.format(fitness))
+    n_roleta = npy.empty([fitness.size])
+    for i in range(fitness.size):
+        n_roleta[i] = round(fitness[i]/fitness_total, 4)
+    n_roleta_ordenados = npy.sort(n_roleta)
+    indices_roleta_ordenados = npy.argsort(n_roleta)
+    i = 0
+    print('Limites de números da roleta: {}'.format(n_roleta))
+    print('Limites de números da roleta ordenados: {}'.format(n_roleta_ordenados))
+    print('Indices de números da roleta ordenados: {}'.format(indices_roleta_ordenados))
+    indice_selecionado_pai = 0
+    pais = [] #geracao.shape[1] é equivalente a qtd_itens
+    # pais = npy.empty((qtd_pais, geracao.shape[1])) #geracao.shape[1] é equivalente a qtd_itens
+    for i in range(qtd_pais):
+        sorteio_roleta = round(rd.random(),4)
+        print('Nº Sorteado na roleta:{}'.format(sorteio_roleta))
+        soma_roleta = 0 
+        for j in range(fitness.size):
+            if (n_roleta_ordenados[j] > 0):
+                soma_roleta += n_roleta_ordenados[j]
+                print ('soma_roleta: {}'.format(soma_roleta))
+                print ('i: {}'.format(i))
+                print ('j: {}'.format(j))
+                print ('j+1: {}'.format(j+1))
+                print ('fitness.size-1: {}'.format(fitness.size-1))
+                print ('n_roleta_ordenados[j]: {}'.format(n_roleta_ordenados[j]))
+
+                if (j+1 <= fitness.size-1):
+                    print ('teste1:')
+                    if (soma_roleta > n_roleta_ordenados[j]) and (soma_roleta < n_roleta_ordenados[j+1]):
+                        print ('teste2:')
+                        indice_selecionado_pai = npy.argsort(n_roleta[j])
+                        print('indice_selecionado_pai: {}'.format(indice_selecionado_pai))
     return pais
 
+def crossover_uniforme(geracao, pais):
+    taxa_crossover = 0.8
+    sorteio_crossover = rd.random()
+    filho1 = [x for x in range(8)]
+    filho2 = [x for x in range(8)],
+    if taxa_crossover >= sorteio_crossover:
+        filho1
+    for i in range(range(pais.shape[1])):
+        sorteio_gene_crossover = rd.randint(0,1)
+        if(sorteio_gene_crossover == 1):
+            filho1[i] = geracao[pai1][i]
+            filho2[i] = geracao[pai2][i]
+        elif(sorteio_gene_crossover == 0):
+            filho1[i] = geracao[pai2][i]
+            filho2[i] = geracao[pai1][i]
+    #verifica se o número gerado é menor que a probabilidade
+
+    
+    return (filho1, filho2)
+
+
 def crossover(pais, qtd_filhos):
-    filhos = npy.empty((qtd_filhos, pais.shape[1]))
-    crossover_point = int(pais.shape[1]/2)
-    crossover_rate = 0.8
+    filhos = npy.empty((qtd_filhos, pais.shape[1])) #pais.shape[1] é equivalente que a qtd_pais
+    crossover_ponto = int(pais.shape[1]/2)
+    crossover_taxa = 0.8
     i=0
+    print ('pais.shape[0] {}'.format(pais.shape[0]))
+    print ('qtd_filhos {}'.format(qtd_filhos))
     while (pais.shape[0] < qtd_filhos):
-        parent1_index = i%pais.shape[0]
-        parent2_index = (i+1)%pais.shape[0]
+        print ('pais_shape[i]{}')
+        pai1_index = i%pais.shape[0]
+        pai2_index = (i+1)%pais.shape[0]
         x = rd.random()
-        if x > crossover_rate:
+        if x > crossover_taxa:
             continue
-        parent1_index = i%pais.shape[0]
-        parent2_index = (i+1)%pais.shape[0]
-        filhos[i,0:crossover_point] = pais[parent1_index,0:crossover_point]
-        filhos[i,crossover_point:] = pais[parent2_index,crossover_point:]
+        pai1_index = i%pais.shape[0]
+        pai2_index = (i+1)%pais.shape[0]
+        filhos[i,0:crossover_ponto] = pais[pai1_index,0:crossover_ponto]
+        filhos[i,crossover_ponto:] = pais[pai2_index,crossover_ponto:]
         i=+1
     return filhos    
 
@@ -130,7 +193,7 @@ def mutacao(filhos):
         mutantes[i,:] = filhos[i,:]
         if random_valor > taxa_mutacao:
             continue
-        int_random_valor = randint(0,filhos.shape[1]-1)    
+        int_random_valor = rd.randint(0,filhos.shape[1]-1)    
         if mutantes[i,int_random_valor] == 0 :
             mutantes[i,int_random_valor] = 1
         else :
@@ -138,39 +201,38 @@ def mutacao(filhos):
     return mutantes   
 
 
-def otimizar(peso, valor, geracao, qtd_solucoes, qtd_geracoes, peso_max_mochila):
+def otimizar(peso, valor, geracao, qtd_solucoes, qtd_geracoes, qtd_pais, peso_max_mochila):
     parameters, fitness_historico = [], []
     #qtd_pais = int(populacao_tamanho[0]/2)
     #qtd_filhos = populacao_tamanho[0] - qtd_pais 
-    qtd_pais = int(qtd_solucoes/2)
     qtd_filhos = qtd_solucoes - qtd_pais 
     for i in range(qtd_geracoes):
-        print('Geração {0}: \n{1}'.format(i+1, geracao)) 
+        print('\nGeração {0}: \n{1}'.format(i+1, geracao)) 
         fitness = calcula_fitness(peso, valor, geracao, peso_max_mochila, i)
         fitness_historico.append(fitness)
-        pais = selecao(fitness, qtd_pais, geracao)
-        filhos = crossover(pais, qtd_filhos)
-        mutantes = mutacao(filhos)
-        geracao[0:pais.shape[0], :] = pais
-        geracao[pais.shape[0]:, :] = mutantes
+        pais = selecao_roleta(fitness, qtd_pais, geracao)
+        # filhos = crossover(pais, qtd_filhos)
+        # mutantes = mutacao(filhos)
+        # geracao[0:pais.shape[0], :] = pais
+        # geracao[pais.shape[0]:, :] = mutantes
         
     fitness_max = npy.where(fitness == npy.max(fitness))
     parameters.append(geracao[fitness_max[0][0],:])
     return parameters, fitness_historico
 
 
-parameters, fitness_historico = otimizar(peso, valor, populacao_inicial, qtd_solucoes, qtd_geracoes, mochila_peso_max)
+parameters, fitness_historico = otimizar(peso, valor, populacao_inicial, qtd_solucoes, qtd_geracoes, qtd_pais, mochila_peso_max)
 print('A melhor solução encontrada para o problema foi: \n{}'.format(parameters))
 selected_items = n_item * parameters
 
 
-fitness_media = [npy.mean(fitness) for fitness in fitness_historico]
-fitness_maximo = [npy.max(fitness) for fitness in fitness_historico]
-plt.plot(list(range(qtd_geracoes)), fitness_media, label = 'Fitness Médio')
-plt.plot(list(range(qtd_geracoes)), fitness_maximo, label = 'Fitness Máximo')
-plt.legend()
-plt.title('Fitness através das gerações')
-plt.xlabel('Gerações')
-plt.ylabel('Fitness')
-plt.show()
-print(npy.asarray(fitness_historico).shape)
+# fitness_media = [npy.mean(fitness) for fitness in fitness_historico]
+# fitness_maximo = [npy.max(fitness) for fitness in fitness_historico]
+# plt.plot(list(range(qtd_geracoes)), fitness_media, label = 'Fitness Médio')
+# plt.plot(list(range(qtd_geracoes)), fitness_maximo, label = 'Fitness Máximo')
+# plt.legend()
+# plt.title('Fitness através das gerações')
+# plt.xlabel('Gerações')
+# plt.ylabel('Fitness')
+# plt.show()
+# print(npy.asarray(fitness_historico).shape)
