@@ -49,7 +49,7 @@ qtd_pais = 5
 
 #Definindo Taxas:
 crossover_taxa = 0.8
-mutacao_taxa = 0.1
+mutacao_taxa = 0.05
 
 #Imprimindo as variáveis
 print('PARAMÊTROS')
