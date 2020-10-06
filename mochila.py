@@ -279,7 +279,7 @@ populacao_inicial = npy.random.randint(2, size = populacao_tamanho)
 populacao_inicial = populacao_inicial.astype(int)
 
 #Imprimindo as variáveis
-print('PARAMÊTROS')
+print('PARÂMETROS')
 print('Peso máximo que a mochila é capaz de carregar: {}'.format(mochila_peso_max))
 print('Quantidade de itens disponíveis: {}'.format(qtd_itens))
 print('Peso mínimo que um item pode possuir: {}'.format(peso_item_min))
