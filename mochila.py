@@ -191,25 +191,25 @@ crossover_taxa = 0.8
 mutacao_taxa = 0.05
 
 #Entrada para as variáveis
-# mochila_peso_max = set_apenas_int("Digite o peso máximo que a mochila aguenta:\n")
-# qtd_itens = set_apenas_int(("Digite a quantidade de itens que serão combinadas para colocar na mochila:\n"))
-# peso_item_min = set_apenas_int(("Digite o peso mínimo para o item:\n"))
-# peso_item_max = 0
-# peso_item_max  = set_apenas_int(("Digite o peso máximo para o item:\n"))
-# while peso_item_max < peso_item_min:
-#     print('O peso máximo do item não pode ser inferior ao peso mínimo') 
-#     peso_item_max  = set_apenas_int(("Digite o peso máximo para o item:\n"))
-# valor_item_min = set_apenas_int(("Digite o valor mínimo para o item:\n"))
-# valor_item_max = 0
-# valor_item_max = set_apenas_int(("Digite o valor máximo para o item:\n"))
-# while valor_item_max < valor_item_min:
-#     print('O valor máximo do item não pode ser inferior ao valor mínimo') 
-#     valor_item_max = set_apenas_int(("Digite o valor máximo para o item:\n"))
-# qtd_individuos = set_apenas_int(("Digite a quantidade de indivíduos:\n"))
-# qtd_pais = set_apenas_int(("Digite a quantidade de pais:\n"))
-# qtd_geracoes = set_apenas_int(("Digite a quantidade de gerações:\n"))
-# crossover_taxa = set_apenas_float(("Digite a taxa de crossover:\n"))
-# mutacao_taxa = set_apenas_float(("Digite a taxa de mutação:\n"))
+mochila_peso_max = set_apenas_int("Digite o peso máximo que a mochila aguenta:\n")
+qtd_itens = set_apenas_int(("Digite a quantidade de itens que serão combinadas para colocar na mochila:\n"))
+peso_item_min = set_apenas_int(("Digite o peso mínimo para o item:\n"))
+peso_item_max = 0
+peso_item_max  = set_apenas_int(("Digite o peso máximo para o item:\n"))
+while peso_item_max < peso_item_min:
+    print('O peso máximo do item não pode ser inferior ao peso mínimo') 
+    peso_item_max  = set_apenas_int(("Digite o peso máximo para o item:\n"))
+valor_item_min = set_apenas_int(("Digite o valor mínimo para o item:\n"))
+valor_item_max = 0
+valor_item_max = set_apenas_int(("Digite o valor máximo para o item:\n"))
+while valor_item_max < valor_item_min:
+    print('O valor máximo do item não pode ser inferior ao valor mínimo') 
+    valor_item_max = set_apenas_int(("Digite o valor máximo para o item:\n"))
+qtd_individuos = set_apenas_int(("Digite a quantidade de indivíduos:\n"))
+qtd_pais = set_apenas_int(("Digite a quantidade de pais:\n"))
+qtd_geracoes = set_apenas_int(("Digite a quantidade de gerações:\n"))
+crossover_taxa = set_apenas_float(("Digite a taxa de crossover:\n"))
+mutacao_taxa = set_apenas_float(("Digite a taxa de mutação:\n"))
 
 #Vetor com o número do item
 n_item = npy.arange(1,qtd_itens+1)
