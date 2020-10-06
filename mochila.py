@@ -230,7 +230,7 @@ peso_item_min = 10
 peso_item_max = 100
 valor_item_min = 15
 valor_item_max = 150
-qtd_geracoes = 3
+qtd_geracoes = 10
 qtd_individuos = 6 #É a quantidade de indivíduos para o problema
 qtd_pais = 3
 crossover_taxa = 0.8
@@ -303,6 +303,7 @@ print('\nLISTA DE ITENS')
 print('Nº Item   Peso      Valor')
 for i in range(qtd_itens):
     print('{0}          {1}         {2}'.format(n_item[i], peso[i], valor[i]))
+print('OBS: Pesos e valores gerados aleatoriamente')
 print('\nFUNÇÃO FITNESS\nSe o somatório de (peso do item * gene) para todos os genes do indivíduo da geração for menor ou igual ao peso máximo que a mochila pode aguentar então o fitness é igual o somatório (valor do item * gene) (peso do item * gene) para todos os genes do indivíduo. Caso contrário o fitness é igual a 0.')
 print('\nGERAÇÕES\n0 ou 1 significa se o item está presente ou não no indivíduo de cada geração:')
 
