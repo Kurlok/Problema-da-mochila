@@ -27,7 +27,7 @@ def set_apenas_float(msg):
 
 def calcula_fitness(peso, valor, geracao, peso_max, n_geracao):
     fitness = npy.empty(geracao.shape[0])
-    melhor_solucao = 0 
+    melhor_individuo = 0 
     melhor_fitness = 0
     for i in range(geracao.shape[0]):
         soma_valor = npy.sum(geracao[i] * valor)
@@ -38,24 +38,24 @@ def calcula_fitness(peso, valor, geracao, peso_max, n_geracao):
             fitness[i] = 0
         if melhor_fitness < fitness[i]: 
             melhor_fitness = fitness[i]
-            melhor_solucao = i+1
-        print('Geração {0}, Solução {1}, Fitness: {2}'.format(n_geracao+1, i+1, fitness[i]))
-    print('---- A melhor solução da geração {0} foi a nº {1} ----'.format(n_geracao+1, melhor_solucao))
+            melhor_individuo = i+1
+        print('Geração {0}, Indivíduo {1}, Fitness: {2}'.format(n_geracao+1, i+1, fitness[i]))
+    print('---- O melhor indivíduo da geração {0} foi o nº {1} ----'.format(n_geracao+1, melhor_individuo))
     return fitness.astype(int)
 
 def selecao_roleta(fitness, qtd_pais, geracao):
     fitness_total = npy.sum(fitness)
     print ('\nSELEÇÃO ROLETA')
     print ('Fitness Total da Geração: {}'.format(fitness_total))
-    print ('Fitness das soluções da geração: {}'.format(fitness))
+    print ('Fitness dos indivíduos da geração: {}'.format(fitness))
     n_roleta = npy.empty([fitness.size])
     for i in range(fitness.size):
         n_roleta[i] = round(fitness[i]/fitness_total, 4)
     n_roleta_ordenados = npy.sort(n_roleta)
     indices_roleta_ordenados = npy.argsort(n_roleta)
-    print('Porcentagem de cada solução ser escolhida na roleta: {}'.format(n_roleta))
-    print('Porcentagem de cada solução ser escolhida na roleta ordenados: {}'.format(n_roleta_ordenados))
-    print('Indices das solução correspondentes ordenados: {}'.format(indices_roleta_ordenados))    
+    print('Porcentagem de cada indivíduo ser escolhido na roleta: {}'.format(n_roleta))
+    print('Porcentagem de cada indivíduo ser escolhido na roleta ordenados: {}'.format(n_roleta_ordenados))
+    print('Índices dos indivíduo correspondentes ordenados: {}'.format(indices_roleta_ordenados))    
     indice_selecionado_pai = 0
     pais = npy.empty((qtd_pais, geracao.shape[1])) #geracao.shape[1] é equivalente a qtd_itens
     matriz_roleta = [[0 for i in range(fitness.size)] for i in range(2)] #Matriz 2 x qtd_itens onde a primeira linha é o índice do indivíduo e a segunda o valor da porcentagem do fitness.
@@ -65,7 +65,7 @@ def selecao_roleta(fitness, qtd_pais, geracao):
         soma_roleta += n_roleta_ordenados[i]
         matriz_roleta[0][i] = int(indices_roleta_ordenados[i])
         matriz_roleta[1][i] = soma_roleta
-    print('Matriz roleta (índices das soluções x porcentagem somadas ordenadamente): {}'.format(matriz_roleta))
+    print('Matriz roleta (índices dos indivíduos x porcentagem somadas ordenadamente): {}'.format(matriz_roleta))
     i = 0
     for i in range(qtd_pais):
         sorteio_roleta = round(rd.random(),4)
@@ -81,7 +81,7 @@ def selecao_roleta(fitness, qtd_pais, geracao):
 
 def selecao_ranking(fitness, qtd_pais, geracao):
     print ('\nSELEÇÃO RANKING')
-    print ('Fitness das soluções da geração: {}'.format(fitness))
+    print ('Fitness dos indivíduos da geração: {}'.format(fitness))
     fitness_ordenados = npy.sort(fitness)[::-1]
     indices_fitness_ordenados = npy.argsort(fitness)[::-1]
     print('Fitness Ordenados Descrescentemente: {}'.format(fitness_ordenados))
@@ -99,7 +99,7 @@ def selecao_ranking(fitness, qtd_pais, geracao):
 def crossover_um_ponto(pais, qtd_filhos):
     print ('\nCROSSOVER EM UM PONTO')
     filhos = npy.empty((qtd_filhos, pais.shape[1])) #pais.shape[0] é a qtd_pais e pais.shape[1] é a qtd_items
-    crossover_ponto = int(pais.shape[1]/2) #O ponto escolhido é a metade da solução
+    crossover_ponto = int(pais.shape[1]/2) #O ponto escolhido é a metade da indivíduo
     i=0
     while (i < qtd_filhos):
         print ('------------------Cruzamento {}------------------'.format(i+1))    
@@ -154,9 +154,9 @@ def mutacao(filhos):
         print ('Filho depois da mutação: {}'.format(mutantes[i]))
     return mutantes   
 
-def otimizar(peso, valor, geracao, qtd_solucoes, qtd_geracoes, qtd_pais, peso_max_mochila):
+def otimizar(peso, valor, geracao, qtd_individuos, qtd_geracoes, qtd_pais, peso_max_mochila):
     fitness_historico = []
-    qtd_filhos = qtd_solucoes - qtd_pais 
+    qtd_filhos = qtd_individuos - qtd_pais 
     max_fitness = 0
     for i in range(qtd_geracoes):
         print('\nGERAÇÃO {0}: \n{1}'.format(i, geracao)) 
@@ -180,8 +180,8 @@ peso_item_min = 10
 peso_item_max = 100
 valor_item_min = 15
 valor_item_max = 150
-qtd_solucoes = 8 #É a quantidade de indivíduos para o problema
 qtd_geracoes = 5
+qtd_individuos = 8 #É a quantidade de indivíduos para o problema
 qtd_pais = 5
 crossover_taxa = 0.8
 mutacao_taxa = 0.05
@@ -192,18 +192,16 @@ qtd_itens = set_apenas_int(("Digite a quantidade de itens que serão combinadas 
 peso_item_min = set_apenas_int(("Digite o peso mínimo para o item:\n"))
 peso_item_max  = 0
 while peso_item_max <= peso_item_min:
-  peso_item_max  = set_apenas_int(("Digite o peso máximo para o item:\n"))
-  if peso_item_max  <= peso_item_min:
     print('O peso máximo do item não pode ser inferior ao peso mínimo') 
+    peso_item_max  = set_apenas_int(("Digite o peso máximo para o item:\n"))
 valor_item_min = set_apenas_int(("Digite o valor mínimo para o item:\n"))
 valor_item_max = 0
 while valor_item_max <= valor_item_min:
-  valor_item_max = set_apenas_int(("Digite o valor máximo para o item:\n"))
-  if valor_item_max <= valor_item_min:
     print('O valor máximo do item não pode ser inferior ao valor mínimo') 
-qtd_solucoes = set_apenas_int(("Digite a quantidade de soluções:\n"))
-qtd_geracoes = set_apenas_int(("Digite a quantidade de gerações:\n"))
+    valor_item_max = set_apenas_int(("Digite o valor máximo para o item:\n"))
+qtd_individuos = set_apenas_int(("Digite a quantidade de indivíduos:\n"))
 qtd_pais = set_apenas_int(("Digite a quantidade de pais:\n"))
+qtd_geracoes = set_apenas_int(("Digite a quantidade de gerações:\n"))
 crossover_taxa = set_apenas_float(("Digite a taxa de crossover:\n"))
 mutacao_taxa = set_apenas_float(("Digite a taxa de mutação:\n"))
 
@@ -214,7 +212,7 @@ peso = npy.random.randint(peso_item_min, peso_item_max, size = qtd_itens)
 valor = npy.random.randint(valor_item_min, valor_item_max, size = qtd_itens)
 
 #Definindo a população
-populacao_tamanho = (qtd_solucoes, qtd_itens)
+populacao_tamanho = (qtd_individuos, qtd_itens)
 populacao_inicial = npy.random.randint(2, size = populacao_tamanho)
 populacao_inicial = populacao_inicial.astype(int)
 
@@ -226,7 +224,7 @@ print('Peso mínimo que um item pode possuir: {}'.format(peso_item_min))
 print('Peso máximo que um item pode possuir: {}'.format(peso_item_max))
 print('Valor mínimo que um item pode possuir: {}'.format(valor_item_min))
 print('Valor máximo que um item pode possuir: {}'.format(valor_item_max))
-print('Quantidade de soluções por geração: {}'.format(qtd_solucoes))
+print('Quantidade de indivíduos por geração: {}'.format(qtd_individuos))
 print('Quantidade de gerações: {}'.format(qtd_geracoes))
 print('Quantidade de pais: {}'.format(qtd_pais))
 print('Taxa de crossover: {}'.format(crossover_taxa))
@@ -235,15 +233,15 @@ print('\nLISTA DE ITENS')
 print('Nº Item   Peso      Valor')
 for i in range(qtd_itens):
     print('{0}          {1}         {2}'.format(n_item[i], peso[i], valor[i]))
-print('\nFUNÇÃO FITNESS\nSe o somatório de (peso do item * gene) para todos os genes da solução da geração for menor ou igual ao peso máximo que a mochila pode aguentar então o fitness é igual o somatório (valor do item * gene) (peso do item * gene) para todos os genes da solução. Caso contrário o fitness é igual a 0.')
-print('\nGERAÇÕES\n0 ou 1 significa se o item está presente ou não na solução de cada geração:')
+print('\nFUNÇÃO FITNESS\nSe o somatório de (peso do item * gene) para todos os genes do indivíduo da geração for menor ou igual ao peso máximo que a mochila pode aguentar então o fitness é igual o somatório (valor do item * gene) (peso do item * gene) para todos os genes do indivíduo. Caso contrário o fitness é igual a 0.')
+print('\nGERAÇÕES\n0 ou 1 significa se o item está presente ou não no indivíduo de cada geração:')
 
-fitness_historico = otimizar(peso, valor, populacao_inicial, qtd_solucoes, qtd_geracoes, qtd_pais, mochila_peso_max)
+fitness_historico = otimizar(peso, valor, populacao_inicial, qtd_individuos, qtd_geracoes, qtd_pais, mochila_peso_max)
 
 # Geração do gráfico
 fitness_media = [npy.mean(fitness) for fitness in fitness_historico]
 fitness_maximo = [npy.max(fitness) for fitness in fitness_historico]
-print('\n A MELHOR SOLUÇÃO ENCONTRADA TEM O FITNESS DE: {}'.format(npy.max(fitness_maximo)))
+print('\n O MELHOR INDIVÍDUO ENCONTRADO TEM O FITNESS DE: {}'.format(npy.max(fitness_maximo)))
 plt.plot(list(range(qtd_geracoes)), fitness_media, label = 'Fitness Médio')
 plt.plot(list(range(qtd_geracoes)), fitness_maximo, label = 'Fitness Máximo')
 plt.legend()
