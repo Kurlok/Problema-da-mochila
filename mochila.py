@@ -2,74 +2,28 @@ import numpy as npy
 import random as rd
 import matplotlib.pyplot as plt
 
-#Definindo as variáveis
+def set_apenas_int(msg):
+    while True:
+        try:
+            num = int(input(msg))
+            break
+        except ValueError:
+            print("Por favor, digite um valor inteiro")  
+            continue    
+    return int(num)
 
-#mochila_peso_max = int(input("Digite o peso máximo que a mochila aguenta:\n"))
-mochila_peso_max = 300
-#qtd_itens = int(input("Digite a quantidade de itens que serão combinadas para colocar na mochila:\n"))
-qtd_itens = 6
-
-#peso_item_min = int(input("Digite o peso mínimo para o item:\n"))
-peso_item_min = 10
-
-#peso_item_max  = 0
-#while peso_item_max  < peso_item_min:
-#  peso_item_max  = int(input("Digite o peso máximo para o item:\n"))
-#  if peso_item_max  < peso_item_min:
-#    print('O peso máximo do item não pode ser inferior ao peso mínimo') 
-peso_item_max = 100
-
-#valor_item_min = int(input("Digite o valor mínimo para o item:\n"))
-valor_item_min = 15
-
-#valor_item_max = 0;
-#while valor_item_max < valor_item_min:
-#  valor_item_max = int(input("Digite o valor máximo para o item:\n"))
-#  if valor_item_max < valor_item_min:
-#    print('O valor máximo do item não pode ser inferior ao valor mínimo') 
-valor_item_max = 150
-
-#Vetor com o número do item
-n_item = npy.arange(1,qtd_itens+1)
-
-#Vetores com os pesos e valores aleatórios para cada item
-peso = npy.random.randint(peso_item_min, peso_item_max, size = qtd_itens)
-valor = npy.random.randint(valor_item_min, valor_item_max, size = qtd_itens)
-
-#Definindo a população
-#qtd_solucoes = int(input("Digite a quantidade de soluções:\n"))
-qtd_solucoes = 8 #É a quantidade de indivíduos para o problema
-populacao_tamanho = (qtd_solucoes, qtd_itens)
-populacao_inicial = npy.random.randint(2, size = populacao_tamanho)
-populacao_inicial = populacao_inicial.astype(int)
-#Definindo o a quantidade de gerações
-#qtd_geracoes = int(input("Digite a quantidade de gerações:\n"))
-qtd_geracoes = 5
-qtd_pais = 5
-
-#Definindo Taxas:
-crossover_taxa = 0.8
-mutacao_taxa = 0.05
-
-#Imprimindo as variáveis
-print('PARAMÊTROS')
-print('Peso máximo que a mochila é capaz de carregar: {}'.format(mochila_peso_max))
-print('Quantidade de itens disponíveis: {}'.format(qtd_itens))
-print('Peso mínimo que um item pode possuir: {}'.format(peso_item_min))
-print('Peso máximo que um item pode possuir: {}'.format(peso_item_max))
-print('Valor mínimo que um item pode possuir: {}'.format(valor_item_min))
-print('Valor máximo que um item pode possuir: {}'.format(valor_item_max))
-print('Quantidade de soluções por geração: {}'.format(qtd_solucoes))
-print('Quantidade de gerações: {}'.format(qtd_geracoes))
-print('Quantidade de pais: {}'.format(qtd_pais))
-print('Taxa de crossover: {}'.format(crossover_taxa))
-print('Taxa de mutação: {}'.format(mutacao_taxa))
-print('\nLISTA DE ITENS')
-print('Nº Item   Peso      Valor')
-for i in range(qtd_itens):
-    print('{0}          {1}         {2}'.format(n_item[i], peso[i], valor[i]))
-print('\nFUNÇÃO FITNESS\nSe o somatório de (peso do item * gene) para todos os genes da solução da geração for menor ou igual ao peso máximo que a mochila pode aguentar então o fitness é igual o somatório (valor do item * gene) (peso do item * gene) para todos os genes da solução. Caso contrário o fitness é igual a 0.')
-print('\nGERAÇÕES\n0 ou 1 significa se o item está presente ou não na solução de cada geração:')
+def set_apenas_float(msg):
+    while True:
+        try:
+            num = float(input(msg))
+            while num <= 0:
+                print('Por favor, digite um valor float maior ou igual a 0') 
+                num = set_apenas_float((msg))
+            break
+        except ValueError:
+            print("Por favor, digite um valor float maior ou igual a 0")  
+            continue    
+    return float(num)
 
 def calcula_fitness(peso, valor, geracao, peso_max, n_geracao):
     fitness = npy.empty(geracao.shape[0])
@@ -218,6 +172,71 @@ def otimizar(peso, valor, geracao, qtd_solucoes, qtd_geracoes, qtd_pais, peso_ma
         geracao[0:pais.shape[0], :] = pais
         geracao[pais.shape[0]:, :] = mutantes
     return fitness_historico
+
+#Definindo as variáveis
+mochila_peso_max = 300
+qtd_itens = 6
+peso_item_min = 10
+peso_item_max = 100
+valor_item_min = 15
+valor_item_max = 150
+qtd_solucoes = 8 #É a quantidade de indivíduos para o problema
+qtd_geracoes = 5
+qtd_pais = 5
+crossover_taxa = 0.8
+mutacao_taxa = 0.05
+
+#Entrada para as variáveis
+mochila_peso_max = set_apenas_int("Digite o peso máximo que a mochila aguenta:\n")
+qtd_itens = set_apenas_int(("Digite a quantidade de itens que serão combinadas para colocar na mochila:\n"))
+peso_item_min = set_apenas_int(("Digite o peso mínimo para o item:\n"))
+peso_item_max  = 0
+while peso_item_max <= peso_item_min:
+  peso_item_max  = set_apenas_int(("Digite o peso máximo para o item:\n"))
+  if peso_item_max  <= peso_item_min:
+    print('O peso máximo do item não pode ser inferior ao peso mínimo') 
+valor_item_min = set_apenas_int(("Digite o valor mínimo para o item:\n"))
+valor_item_max = 0
+while valor_item_max <= valor_item_min:
+  valor_item_max = set_apenas_int(("Digite o valor máximo para o item:\n"))
+  if valor_item_max <= valor_item_min:
+    print('O valor máximo do item não pode ser inferior ao valor mínimo') 
+qtd_solucoes = set_apenas_int(("Digite a quantidade de soluções:\n"))
+qtd_geracoes = set_apenas_int(("Digite a quantidade de gerações:\n"))
+qtd_pais = set_apenas_int(("Digite a quantidade de pais:\n"))
+crossover_taxa = set_apenas_float(("Digite a taxa de crossover:\n"))
+mutacao_taxa = set_apenas_float(("Digite a taxa de mutação:\n"))
+
+#Vetor com o número do item
+n_item = npy.arange(1,qtd_itens+1)
+#Vetores com os pesos e valores aleatórios para cada item
+peso = npy.random.randint(peso_item_min, peso_item_max, size = qtd_itens)
+valor = npy.random.randint(valor_item_min, valor_item_max, size = qtd_itens)
+
+#Definindo a população
+populacao_tamanho = (qtd_solucoes, qtd_itens)
+populacao_inicial = npy.random.randint(2, size = populacao_tamanho)
+populacao_inicial = populacao_inicial.astype(int)
+
+#Imprimindo as variáveis
+print('PARAMÊTROS')
+print('Peso máximo que a mochila é capaz de carregar: {}'.format(mochila_peso_max))
+print('Quantidade de itens disponíveis: {}'.format(qtd_itens))
+print('Peso mínimo que um item pode possuir: {}'.format(peso_item_min))
+print('Peso máximo que um item pode possuir: {}'.format(peso_item_max))
+print('Valor mínimo que um item pode possuir: {}'.format(valor_item_min))
+print('Valor máximo que um item pode possuir: {}'.format(valor_item_max))
+print('Quantidade de soluções por geração: {}'.format(qtd_solucoes))
+print('Quantidade de gerações: {}'.format(qtd_geracoes))
+print('Quantidade de pais: {}'.format(qtd_pais))
+print('Taxa de crossover: {}'.format(crossover_taxa))
+print('Taxa de mutação: {}'.format(mutacao_taxa))
+print('\nLISTA DE ITENS')
+print('Nº Item   Peso      Valor')
+for i in range(qtd_itens):
+    print('{0}          {1}         {2}'.format(n_item[i], peso[i], valor[i]))
+print('\nFUNÇÃO FITNESS\nSe o somatório de (peso do item * gene) para todos os genes da solução da geração for menor ou igual ao peso máximo que a mochila pode aguentar então o fitness é igual o somatório (valor do item * gene) (peso do item * gene) para todos os genes da solução. Caso contrário o fitness é igual a 0.')
+print('\nGERAÇÕES\n0 ou 1 significa se o item está presente ou não na solução de cada geração:')
 
 fitness_historico = otimizar(peso, valor, populacao_inicial, qtd_solucoes, qtd_geracoes, qtd_pais, mochila_peso_max)
 
