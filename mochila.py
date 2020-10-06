@@ -240,7 +240,7 @@ tipo_crossover = 1 # 1 para Uniforme e 2 para Um ponto
 
 #Entrada para as variáveis 
 mochila_peso_max = set_apenas_int("Digite o peso máximo que a mochila aguenta:\n")
-qtd_itens = set_apenas_int(("Digite a quantidade de itens que serão combinadas para colocar na mochila:\n"))
+qtd_itens = set_apenas_int(("Digite a quantidade de itens:\n"))
 peso_item_min = set_apenas_int(("Digite o peso mínimo para o item:\n"))
 peso_item_max = 0
 peso_item_max  = set_apenas_int(("Digite o peso máximo para o item:\n"))
@@ -253,7 +253,7 @@ valor_item_max = set_apenas_int(("Digite o valor máximo para o item:\n"))
 while valor_item_max < valor_item_min:
     print('O valor máximo do item não pode ser inferior ao valor mínimo') 
     valor_item_max = set_apenas_int(("Digite o valor máximo para o item:\n"))
-qtd_individuos = set_apenas_int(("Digite a quantidade de indivíduos:\n"))
+qtd_individuos = set_apenas_int(("Digite a quantidade de indivíduos/soluções:\n"))
 qtd_pais = set_apenas_int(("Digite a quantidade de pais:\n"))
 qtd_geracoes = set_apenas_int(("Digite a quantidade de gerações:\n"))
 tipo_selecao = set_apenas_int(("Escolha o tipo de seleção:\n1- Ranking\n2- Roleta"))
