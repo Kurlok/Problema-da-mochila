@@ -304,7 +304,7 @@ print('Nº Item   Peso      Valor')
 for i in range(qtd_itens):
     print('{0}          {1}         {2}'.format(n_item[i], peso[i], valor[i]))
 print('OBS: Pesos e valores gerados aleatoriamente')
-print('\nFUNÇÃO FITNESS\nSe o somatório de (peso do item * gene) para todos os genes do indivíduo da geração for menor ou igual ao peso máximo que a mochila pode aguentar então o fitness é igual o somatório (valor do item * gene) (peso do item * gene) para todos os genes do indivíduo. Caso contrário o fitness é igual a 0.')
+print('\nFUNÇÃO FITNESS\nSe o somatório de (peso do item * gene) para todos os genes do indivíduo da geração for menor ou igual ao peso máximo que a mochila pode aguentar então o fitness é igual o somatório (valor do item * gene) para todos os genes do indivíduo. Caso contrário o fitness é igual a 0.')
 print('\nGERAÇÕES\n0 ou 1 significa se o item está presente ou não no indivíduo de cada geração:')
 
 fitness_historico = otimizar(peso, valor, populacao_inicial, qtd_individuos, qtd_geracoes, qtd_pais, mochila_peso_max, tipo_crossover, tipo_selecao)
